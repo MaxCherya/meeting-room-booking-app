@@ -1,20 +1,27 @@
 'use client';
 
-import CancelButton from '@/components/ui/bnts/CancelButton';
-import SubmitButton from '@/components/ui/bnts/SubmitButton';
-import GeneralInput from '@/components/ui/inputs/GeneralInput';
 import { useState } from 'react';
-
+import { useRouter } from 'next/navigation';
+import GeneralModal from '@/components/ui/modals/GeneralModal';
+import GeneralInput from '@/components/ui/inputs/GeneralInput';
+import SubmitButton from '@/components/ui/bnts/SubmitButton';
+import CancelButton from '@/components/ui/bnts/CancelButton';
 
 export default function Login() {
+    const router = useRouter();
+    const [open, setOpen] = useState(true);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    const close = () => {
+        setOpen(false);
+        router.push('/'); // or router.back()
+    };
+
     return (
-        <div className="min-h-screen grid place-items-center bg-bg">
-            <div className="w-full max-w-md bg-surface border border-border rounded-2xl shadow-xl p-6 md:p-8">
-                <h1 className="text-2xl font-semibold text-text mb-1">Sign in</h1>
-                <p className="text-sm text-text-muted mb-6">
+        <div className="min-h-screen bg-bg">
+            <GeneralModal isOpen={open} onClose={close} title="Sign in">
+                <p className="text-sm text-text-muted mb-4">
                     Welcome back! Enter your credentials to continue.
                 </p>
 
@@ -22,9 +29,9 @@ export default function Login() {
                     className="space-y-4"
                     onSubmit={(e) => {
                         e.preventDefault();
-                        // no endpoints yet — just a stub for now
                         console.log({ email, password });
                         alert('Submitted (stub). Hook up API later.');
+                        close();
                     }}
                 >
                     <GeneralInput
@@ -46,17 +53,18 @@ export default function Login() {
                     />
 
                     <SubmitButton>Sign in</SubmitButton>
-                    <CancelButton className='w-full'>Cancel</CancelButton>
-
+                    <CancelButton className="w-full" onClick={close}>
+                        Cancel
+                    </CancelButton>
                 </form>
 
                 <p className="text-sm text-text-muted text-center mt-6">
                     Don’t have an account?{' '}
-                    <a href="/register" className="text-primary hover:underline">
+                    <a className="text-primary hover:underline" onClick={() => router.push('/register')}>
                         Create one
                     </a>
                 </p>
-            </div>
+            </GeneralModal>
         </div>
     );
 }

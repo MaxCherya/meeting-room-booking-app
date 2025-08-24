@@ -1,21 +1,29 @@
 'use client';
 
-import CancelButton from '@/components/ui/bnts/CancelButton';
-import SubmitButton from '@/components/ui/bnts/SubmitButton';
-import GeneralInput from '@/components/ui/inputs/GeneralInput';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import GeneralModal from '@/components/ui/modals/GeneralModal';
+import GeneralInput from '@/components/ui/inputs/GeneralInput';
+import SubmitButton from '@/components/ui/bnts/SubmitButton';
+import CancelButton from '@/components/ui/bnts/CancelButton';
 
 export default function Register() {
+    const router = useRouter();
+    const [open, setOpen] = useState(true);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirm, setConfirm] = useState('');
 
+    const close = () => {
+        setOpen(false);
+        router.push('/'); // or router.back()
+    };
+
     return (
-        <div className="min-h-screen grid place-items-center bg-bg">
-            <div className="w-full max-w-md bg-surface border border-border rounded-2xl shadow-xl p-6 md:p-8">
-                <h1 className="text-2xl font-semibold text-text mb-1">Create account</h1>
-                <p className="text-sm text-text-muted mb-6">
+        <div className="min-h-screen bg-bg">
+            <GeneralModal isOpen={open} onClose={close} title="Create account">
+                <p className="text-sm text-text-muted mb-4">
                     Fill in the details below to register.
                 </p>
 
@@ -29,6 +37,7 @@ export default function Register() {
                         }
                         console.log({ name, email, password });
                         alert('Registered (stub). Hook up API later.');
+                        close();
                     }}
                 >
                     <GeneralInput
@@ -67,17 +76,18 @@ export default function Register() {
                     />
 
                     <SubmitButton>Register</SubmitButton>
-                    <CancelButton className='w-full'>Cancel</CancelButton>
-
+                    <CancelButton className="w-full" onClick={close}>
+                        Cancel
+                    </CancelButton>
                 </form>
 
                 <p className="text-sm text-text-muted text-center mt-6">
                     Already have an account?{' '}
-                    <a href="/login" className="text-primary hover:underline">
+                    <a className="text-primary hover:underline" onClick={() => router.push('/login')}>
                         Sign in
                     </a>
                 </p>
-            </div>
+            </GeneralModal>
         </div>
     );
 }
