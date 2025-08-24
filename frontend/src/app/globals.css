@@ -1,1 +1,33 @@
 @import "tailwindcss";
+
+@theme {
+    /* Brand */
+    --color-primary: #2563EB;
+    /* Blue (calm, modern) */
+    --color-primary-light: #3B82F6;
+    --color-primary-dark: #1E40AF;
+
+    /* Accent */
+    --color-accent: #10B981;
+    /* Emerald green */
+    --color-accent-light: #34D399;
+    --color-accent-dark: #047857;
+
+    /* Neutral */
+    --color-bg: #F9FAFB;
+    /* soft gray background */
+    --color-surface: #FFFFFF;
+    /* card / surface */
+    --color-border: #E5E7EB;
+    /* light border */
+    --color-text: #111827;
+    /* near-black */
+    --color-text-muted: #6B7280;
+    /* secondary */
+
+    /* Semantic (for status states) */
+    --color-success: #22C55E;
+    --color-warning: #F59E0B;
+    --color-error: #EF4444;
+    --color-info: #3B82F6;
+}
