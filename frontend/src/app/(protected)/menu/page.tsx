@@ -6,6 +6,7 @@ import Main from "@/components/mm/Main";
 import RoomRegistration from "@/components/mm/RoomRegistration";
 import Pagination from "@/components/ui/pagination/Pagination";
 import { useRoomsQuery } from "@/endpoints/room/room.hooks";
+import Loader from "@/components/ui/loaders/Loader";
 
 export default function HomePage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,7 +25,7 @@ export default function HomePage() {
         <div className="p-6 space-y-6">
             <Header search={search} onSearchChange={setSearch} onAdd={() => setIsModalOpen(true)} />
 
-            {isLoading && <p className="text-text-muted">Loading rooms…</p>}
+            {isLoading && <Loader />}
             {error && <p className="text-error">{(error as Error).message || "Failed to load rooms"}</p>}
 
             {data && (

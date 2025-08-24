@@ -6,6 +6,7 @@ import GeneralInput from "@/components/ui/inputs/GeneralInput";
 import SubmitButton from "@/components/ui/bnts/SubmitButton";
 import CancelButton from "@/components/ui/bnts/CancelButton";
 import { useCreateRoomMutation } from "@/endpoints/room/room.hooks";
+import Loader from "../ui/loaders/Loader";
 
 interface Props {
     isOpen: boolean;
@@ -31,6 +32,9 @@ export default function RoomRegistration({ isOpen, onClose }: Props) {
 
     return (
         <GeneralModal isOpen={isOpen} onClose={onClose} title="Register a new room">
+
+            {isPending && <Loader />}
+
             <form
                 className="space-y-4"
                 onSubmit={(e) => handleSubmit(e)}

@@ -9,6 +9,7 @@ import { RoomMember } from '@/types/meeting';
 import EmptyState from './EmptyState';
 import ListCard from '../ui/cards/ListCard';
 import ConfirmDialog from '../ui/modals/ConfirmDialogue';
+import Loader from '../ui/loaders/Loader';
 
 interface MembersPanelProps {
     roomId: number;
@@ -64,6 +65,9 @@ export default function MembersPanel({
 
     return (
         <div className="space-y-4">
+
+            {busy && <Loader />}
+
             {isAdmin && (
                 <div className="flex justify-end">
                     <GeneralButton onClick={() => setOpenAdd(true)}>+ Add member</GeneralButton>

@@ -11,6 +11,7 @@ import ListCard from '../ui/cards/ListCard';
 import ConfirmDialog from '../ui/modals/ConfirmDialogue';
 import { Booking } from '@/types/meeting';
 import { useRouter } from 'next/navigation';
+import Loader from '../ui/loaders/Loader';
 
 interface BookingsPanelProps {
     roomId: number;
@@ -83,6 +84,9 @@ export default function BookingsPanel({
 
     return (
         <div className="space-y-4">
+
+            {busy && <Loader />}
+
             <div className="flex justify-end">
                 <GeneralButton onClick={() => setOpenCreate(true)}>+ New booking</GeneralButton>
             </div>
