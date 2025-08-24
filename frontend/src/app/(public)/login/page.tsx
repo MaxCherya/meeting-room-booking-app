@@ -1,22 +1,42 @@
 'use client';
 
-import { useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import GeneralModal from '@/components/ui/modals/GeneralModal';
 import GeneralInput from '@/components/ui/inputs/GeneralInput';
 import SubmitButton from '@/components/ui/bnts/SubmitButton';
 import CancelButton from '@/components/ui/bnts/CancelButton';
+import { useLoginMutation } from '@/endpoints/auth/auth.hooks';
+import { useAppDispatch } from '@/store/store';
+import { setUser } from '@/store/userSlice';
 
 export default function Login() {
     const router = useRouter();
+    const dispatch = useAppDispatch();
+
     const [open, setOpen] = useState(true);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    const { mutate: login, isPending, error } = useLoginMutation();
+
     const close = () => {
         setOpen(false);
-        router.push('/'); // or router.back()
+        router.push('/');
     };
+
+    const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        login(
+            { email, password },
+            {
+                onSuccess: (res) => {
+                    dispatch(setUser(res.user));
+                    router.replace('/menu');
+                },
+            }
+        );
+    }
 
     return (
         <div className="min-h-screen bg-bg">
@@ -27,12 +47,7 @@ export default function Login() {
 
                 <form
                     className="space-y-4"
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        console.log({ email, password });
-                        alert('Submitted (stub). Hook up API later.');
-                        close();
-                    }}
+                    onSubmit={(e) => handleLogin(e)}
                 >
                     <GeneralInput
                         id="email"
@@ -52,7 +67,15 @@ export default function Login() {
                         onChange={(e) => setPassword(e.target.value)}
                     />
 
-                    <SubmitButton>Sign in</SubmitButton>
+                    {error && (
+                        <p className="text-error text-sm">
+                            {(error as Error).message || 'Login failed'}
+                        </p>
+                    )}
+
+                    <SubmitButton className="w-full">
+                        {isPending ? 'Signing in…' : 'Sign in'}
+                    </SubmitButton>
                     <CancelButton className="w-full" onClick={close}>
                         Cancel
                     </CancelButton>
@@ -60,7 +83,10 @@ export default function Login() {
 
                 <p className="text-sm text-text-muted text-center mt-6">
                     Don’t have an account?{' '}
-                    <a className="text-primary hover:underline" onClick={() => router.push('/register')}>
+                    <a
+                        className="text-primary hover:underline"
+                        onClick={() => router.push('/register')}
+                    >
                         Create one
                     </a>
                 </p>

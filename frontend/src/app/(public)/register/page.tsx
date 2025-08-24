@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import GeneralModal from '@/components/ui/modals/GeneralModal';
 import GeneralInput from '@/components/ui/inputs/GeneralInput';
 import SubmitButton from '@/components/ui/bnts/SubmitButton';
 import CancelButton from '@/components/ui/bnts/CancelButton';
+import { useRegisterMutation } from '@/endpoints/auth/auth.hooks';
 
 export default function Register() {
     const router = useRouter();
@@ -15,10 +16,29 @@ export default function Register() {
     const [password, setPassword] = useState('');
     const [confirm, setConfirm] = useState('');
 
+    const { mutate: register, isPending, error } = useRegisterMutation();
+
     const close = () => {
         setOpen(false);
-        router.push('/'); // or router.back()
+        router.push('/');
     };
+
+    const handleRegister = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (password !== confirm) {
+            alert('Passwords do not match');
+            return;
+        }
+
+        register(
+            { name, email, password },
+            {
+                onSuccess: () => {
+                    router.replace('/login');
+                },
+            }
+        );
+    }
 
     return (
         <div className="min-h-screen bg-bg">
@@ -29,16 +49,7 @@ export default function Register() {
 
                 <form
                     className="space-y-4"
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        if (password !== confirm) {
-                            alert('Passwords do not match');
-                            return;
-                        }
-                        console.log({ name, email, password });
-                        alert('Registered (stub). Hook up API later.');
-                        close();
-                    }}
+                    onSubmit={(e) => handleRegister(e)}
                 >
                     <GeneralInput
                         id="name"
@@ -75,7 +86,15 @@ export default function Register() {
                         onChange={(e) => setConfirm(e.target.value)}
                     />
 
-                    <SubmitButton>Register</SubmitButton>
+                    {error && (
+                        <p className="text-error text-sm">
+                            {(error as Error).message || 'Registration failed'}
+                        </p>
+                    )}
+
+                    <SubmitButton className="w-full">
+                        {isPending ? 'Registering…' : 'Register'}
+                    </SubmitButton>
                     <CancelButton className="w-full" onClick={close}>
                         Cancel
                     </CancelButton>
@@ -83,7 +102,10 @@ export default function Register() {
 
                 <p className="text-sm text-text-muted text-center mt-6">
                     Already have an account?{' '}
-                    <a className="text-primary hover:underline" onClick={() => router.push('/login')}>
+                    <a
+                        className="text-primary hover:underline"
+                        onClick={() => router.push('/login')}
+                    >
                         Sign in
                     </a>
                 </p>
