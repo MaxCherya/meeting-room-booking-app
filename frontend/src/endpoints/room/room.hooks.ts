@@ -33,24 +33,32 @@ export function useCreateRoomMutation() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: createRoom,
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["rooms"] }),
+    onSuccess: (created) => {
+      qc.invalidateQueries({ queryKey: ROOM_KEYS.root });
+      if (created?.id) qc.invalidateQueries({ queryKey: ROOM_KEYS.detail(created.id) });
+    },
   });
 }
 
-// Mutation: update room
 export function useUpdateRoomMutation() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: ({ id, data }: { id: number; data: Partial<Room> }) => updateRoom(id, data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["rooms"] }),
+    onSuccess: (_res, vars) => {
+      // refresh both detail and all lists
+      qc.invalidateQueries({ queryKey: ROOM_KEYS.detail(vars.id) });
+      qc.invalidateQueries({ queryKey: ROOM_KEYS.root });
+    },
   });
 }
 
-// Mutation: delete room
 export function useDeleteRoomMutation() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: number) => deleteRoom(id),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["rooms"] }),
+    onSuccess: (_res, id) => {
+      qc.invalidateQueries({ queryKey: ROOM_KEYS.root });
+      qc.removeQueries({ queryKey: ROOM_KEYS.detail(id) });
+    },
   });
 }

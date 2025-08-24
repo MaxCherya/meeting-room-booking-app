@@ -8,6 +8,7 @@ interface RoomHeaderProps {
     onAddBooking: () => void;
     onAddMember: () => void;
     onDeleteRoom: () => void;
+    onEditRoom?: () => void;
 }
 
 export default function RoomHeader({
@@ -16,6 +17,7 @@ export default function RoomHeader({
     onAddBooking,
     onAddMember,
     onDeleteRoom,
+    onEditRoom,
 }: RoomHeaderProps) {
     return (
         <div className="bg-surface border border-border rounded-2xl p-5 shadow-sm">
@@ -34,6 +36,7 @@ export default function RoomHeader({
                 <div className="flex items-center flex-col lg:flex-row gap-2 md:gap-3">
                     {isAdmin && (
                         <>
+                            <GeneralButton onClick={onEditRoom}>Edit room</GeneralButton>
                             <button
                                 onClick={onDeleteRoom}
                                 className="px-4 py-2 rounded-xl border border-border text-error hover:bg-border"
