@@ -23,6 +23,7 @@ import { useDeleteRoomMutation } from '@/endpoints/room/room.hooks';
 import { useAppSelector } from '@/store/store';
 import { selectUser } from '@/store/userSlice';
 import ConfirmDialog from '@/components/ui/modals/ConfirmDialogue';
+import Loader from '@/components/ui/loaders/Loader';
 
 export default function RoomPage({ params }: { params: Promise<{ id: string }> }) {
     const router = useRouter();
@@ -117,7 +118,7 @@ export default function RoomPage({ params }: { params: Promise<{ id: string }> }
     // loading / error states
     if (loadingRoom) {
         return (
-            <div className="p-6 text-text-muted">Loading room…</div>
+            <Loader />
         );
     }
     if (roomError || !room) {
@@ -128,6 +129,9 @@ export default function RoomPage({ params }: { params: Promise<{ id: string }> }
 
     return (
         <div className="space-y-6 p-6">
+
+            {(loadingMembers || loadingBookings || deletingRoom) && <Loader />}
+
             <RoomHeader
                 room={room}
                 isAdmin={isAdmin}

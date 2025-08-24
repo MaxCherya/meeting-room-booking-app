@@ -6,6 +6,7 @@ import SubmitButton from '@/components/ui/bnts/SubmitButton';
 import { useState, useEffect } from 'react';
 import { toInputValue, toIso } from '@/utils/date';
 import { UpdateBookingPayload } from '@/types/meeting';
+import Loader from '../ui/loaders/Loader';
 
 interface EditBookingModalProps {
     isOpen: boolean;
@@ -57,6 +58,9 @@ export default function EditBookingModal({
 
     return (
         <GeneralModal isOpen={isOpen} onClose={onClose} title="Edit booking">
+
+            {isSaving && <Loader />}
+
             <form className="space-y-4" onSubmit={submit}>
                 <GeneralInput
                     id="startsAt"

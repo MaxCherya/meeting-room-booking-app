@@ -19,6 +19,7 @@ import { selectUser } from '@/store/userSlice';
 import ConfirmDialog from '@/components/ui/modals/ConfirmDialogue';
 import AttendeesPanel from '@/components/booking/AtendeesPanel';
 import { UpdateBookingPayload } from '@/types/meeting';
+import Loader from '@/components/ui/loaders/Loader';
 
 export default function BookingClient({ bookingId }: { bookingId: number }) {
     const router = useRouter();
@@ -46,7 +47,7 @@ export default function BookingClient({ bookingId }: { bookingId: number }) {
     const [openEdit, setOpenEdit] = useState(false);
     const [openCancel, setOpenCancel] = useState(false);
 
-    if (loadingBooking) return <div className="p-6 text-text-muted">Loading booking…</div>;
+    if (loadingBooking) return <Loader />;
     if (bookingError || !booking) return <div className="p-6 text-error">Booking not found</div>;
 
     // handlers
@@ -105,6 +106,9 @@ export default function BookingClient({ bookingId }: { bookingId: number }) {
 
     return (
         <div className="space-y-6 p-6">
+
+            {(saving || cancelling) && <Loader />}
+
             <BookingHeader
                 booking={booking}
                 isAdminOrCreator={!!canManage}

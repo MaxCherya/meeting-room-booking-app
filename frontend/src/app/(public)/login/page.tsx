@@ -9,6 +9,7 @@ import CancelButton from '@/components/ui/bnts/CancelButton';
 import { useLoginMutation } from '@/endpoints/auth/auth.hooks';
 import { useAppDispatch } from '@/store/store';
 import { setUser } from '@/store/userSlice';
+import Loader from '@/components/ui/loaders/Loader';
 
 export default function Login() {
     const router = useRouter();
@@ -40,6 +41,9 @@ export default function Login() {
 
     return (
         <div className="min-h-screen bg-bg">
+
+            {isPending && <Loader />}
+
             <GeneralModal isOpen={open} onClose={close} title="Sign in">
                 <p className="text-sm text-text-muted mb-4">
                     Welcome back! Enter your credentials to continue.

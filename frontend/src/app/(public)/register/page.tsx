@@ -7,6 +7,7 @@ import GeneralInput from '@/components/ui/inputs/GeneralInput';
 import SubmitButton from '@/components/ui/bnts/SubmitButton';
 import CancelButton from '@/components/ui/bnts/CancelButton';
 import { useRegisterMutation } from '@/endpoints/auth/auth.hooks';
+import Loader from '@/components/ui/loaders/Loader';
 
 export default function Register() {
     const router = useRouter();
@@ -42,6 +43,9 @@ export default function Register() {
 
     return (
         <div className="min-h-screen bg-bg">
+
+            {isPending && <Loader />}
+
             <GeneralModal isOpen={open} onClose={close} title="Create account">
                 <p className="text-sm text-text-muted mb-4">
                     Fill in the details below to register.
