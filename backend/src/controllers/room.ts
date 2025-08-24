@@ -4,6 +4,24 @@ import { RoomMember } from "../models/RoomMember";
 import { User } from "../models/User";
 import { Op } from "sequelize";
 
+
+// GET /api/room/:id
+export async function getRoom(req: Request, res: Response) {
+  const { id } = req.params;
+
+  const room = await Room.findByPk(id, {
+    include: [
+      {
+        model: RoomMember,
+        include: [{ model: User, attributes: ["id", "name", "email"] }],
+      },
+    ],
+  });
+
+  if (!room) return res.status(404).json({ message: "Room not found" });
+  res.json(room);
+}
+
 // GET /api/rooms
 export async function listRooms(req: Request, res: Response) {
   const page = parseInt(String(req.query.page || "1"), 10);

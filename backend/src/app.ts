@@ -6,6 +6,7 @@ import { sequelize } from './config/sequelize';
 import config from './config/config';
 import authRoutes from './routes/auth';
 import roomRoutes from "./routes/room";
+import bookingRoutes from "./routes/booking";
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use(
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/rooms", roomRoutes);
+app.use("/api/bookings", bookingRoutes);
 
 // Global error handler
 app.use(errorHandler);

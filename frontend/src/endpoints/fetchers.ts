@@ -39,7 +39,7 @@ export async function protectedFetcher<T>(path: string, options: RequestInit = {
   } catch (err: any) {
     if (err.status === 401) {
       try {
-        await doRequest(`${BASE_URL}/auth/refresh`, { method: "POST" });
+        await doRequest('/auth/refresh', { method: 'POST' });
         return await doRequest<T>(path, options);
       } catch (refreshErr) {
         throw refreshErr;
