@@ -24,6 +24,7 @@ import { useAppSelector } from '@/store/store';
 import { selectUser } from '@/store/userSlice';
 import ConfirmDialog from '@/components/ui/modals/ConfirmDialogue';
 import Loader from '@/components/ui/loaders/Loader';
+import { toast } from 'react-toastify';
 
 export default function RoomPage({ params }: { params: Promise<{ id: string }> }) {
     const router = useRouter();
@@ -64,14 +65,14 @@ export default function RoomPage({ params }: { params: Promise<{ id: string }> }
     // handlers
     const handleCreateBooking = async (dto: { startsAt: string; endsAt: string; description?: string }) => {
         if (!dto.startsAt || !dto.endsAt || new Date(dto.startsAt) >= new Date(dto.endsAt)) {
-            alert('Please set a valid start/end time');
+            toast.error('Please set a valid start/end time');
             return;
         }
         try {
             await createBookingAsync(dto);
         } catch (e: any) {
-            if (e.status === 409) alert('Time conflict with an existing booking');
-            else alert(e.message || 'Failed to create booking');
+            if (e.status === 409) toast.error('Time conflict with an existing booking');
+            else toast.error(e.message || 'Failed to create booking');
         }
     };
 
@@ -79,7 +80,7 @@ export default function RoomPage({ params }: { params: Promise<{ id: string }> }
         try {
             await deleteBookingAsync(id);
         } catch (e: any) {
-            alert(e.message || 'Failed to cancel booking');
+            toast.error(e.message || 'Failed to cancel booking');
         }
     };
 
@@ -88,11 +89,11 @@ export default function RoomPage({ params }: { params: Promise<{ id: string }> }
             await addMemberAsync({ email, role });
         } catch (e: any) {
             if (e.status === 404) {
-                alert('That email is not registered');
+                toast.error('That email is not registered');
             } else if (e.status === 403) {
-                alert("You don't have permission to add members");
+                toast.error("You don't have permission to add members");
             } else {
-                alert(e.message || 'Failed to add member');
+                toast.error(e.message || 'Failed to add member');
             }
         }
     };
@@ -101,7 +102,7 @@ export default function RoomPage({ params }: { params: Promise<{ id: string }> }
         try {
             await removeMemberAsync(userId);
         } catch (e: any) {
-            alert(e.message || 'Failed to remove member');
+            toast.error(e.message || 'Failed to remove member');
         }
     };
 

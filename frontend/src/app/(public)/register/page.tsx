@@ -8,6 +8,7 @@ import SubmitButton from '@/components/ui/bnts/SubmitButton';
 import CancelButton from '@/components/ui/bnts/CancelButton';
 import { useRegisterMutation } from '@/endpoints/auth/auth.hooks';
 import Loader from '@/components/ui/loaders/Loader';
+import { toast } from 'react-toastify';
 
 export default function Register() {
     const router = useRouter();
@@ -27,13 +28,16 @@ export default function Register() {
     const handleRegister = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (password !== confirm) {
-            alert('Passwords do not match');
+            toast.error('Passwords do not match');
             return;
         }
 
         register(
             { name, email, password },
             {
+                onError: (res) => {
+                    toast.error(res.message);
+                },
                 onSuccess: () => {
                     router.replace('/login');
                 },

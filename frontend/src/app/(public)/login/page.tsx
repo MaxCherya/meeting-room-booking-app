@@ -10,6 +10,7 @@ import { useLoginMutation } from '@/endpoints/auth/auth.hooks';
 import { useAppDispatch } from '@/store/store';
 import { setUser } from '@/store/userSlice';
 import Loader from '@/components/ui/loaders/Loader';
+import { toast } from 'react-toastify';
 
 export default function Login() {
     const router = useRouter();
@@ -31,6 +32,9 @@ export default function Login() {
         login(
             { email, password },
             {
+                onError: (res) => {
+                    toast.error(res.message);
+                },
                 onSuccess: (res) => {
                     dispatch(setUser(res.user));
                     router.replace('/menu');

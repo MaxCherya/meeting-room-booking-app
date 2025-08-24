@@ -20,6 +20,7 @@ import ConfirmDialog from '@/components/ui/modals/ConfirmDialogue';
 import AttendeesPanel from '@/components/booking/AtendeesPanel';
 import { UpdateBookingPayload } from '@/types/meeting';
 import Loader from '@/components/ui/loaders/Loader';
+import { toast } from 'react-toastify';
 
 export default function BookingClient({ bookingId }: { bookingId: number }) {
     const router = useRouter();
@@ -56,8 +57,8 @@ export default function BookingClient({ bookingId }: { bookingId: number }) {
             await saveBooking(dto);
             setOpenEdit(false);
         } catch (e: any) {
-            if (e.status === 409) alert('Time conflict with an existing booking');
-            else alert(e.message || 'Failed to update booking');
+            if (e.status === 409) toast.error('Time conflict with an existing booking');
+            else toast.error(e.message || 'Failed to update booking');
         }
     };
 
@@ -66,7 +67,7 @@ export default function BookingClient({ bookingId }: { bookingId: number }) {
             await cancelBooking(booking.id);
             router.replace(`/rooms/${booking.roomId}`);
         } catch (e: any) {
-            alert(e.message || 'Failed to cancel booking');
+            toast.error(e.message || 'Failed to cancel booking');
         }
     };
 
@@ -74,7 +75,7 @@ export default function BookingClient({ bookingId }: { bookingId: number }) {
         try {
             await joinMut.mutateAsync();
         } catch (e: any) {
-            alert(e.message || 'Failed to join');
+            toast.error(e.message || 'Failed to join');
         }
     };
 
@@ -82,7 +83,7 @@ export default function BookingClient({ bookingId }: { bookingId: number }) {
         try {
             await leaveMut.mutateAsync();
         } catch (e: any) {
-            alert(e.message || 'Failed to leave');
+            toast.error(e.message || 'Failed to leave');
         }
     };
 
@@ -90,9 +91,9 @@ export default function BookingClient({ bookingId }: { bookingId: number }) {
         try {
             await addAtt(email);
         } catch (e: any) {
-            if (e.status === 404) alert('That email is not registered');
-            else if (e.status === 403) alert('You do not have permission');
-            else alert(e.message || 'Failed to add attendee');
+            if (e.status === 404) toast.error('That email is not registered');
+            else if (e.status === 403) toast.error('You do not have permission');
+            else toast.error(e.message || 'Failed to add attendee');
         }
     };
 
@@ -100,7 +101,7 @@ export default function BookingClient({ bookingId }: { bookingId: number }) {
         try {
             await removeAtt(userId);
         } catch (e: any) {
-            alert(e.message || 'Failed to remove attendee');
+            toast.error(e.message || 'Failed to remove attendee');
         }
     };
 
