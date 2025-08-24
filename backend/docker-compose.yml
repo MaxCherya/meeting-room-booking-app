@@ -1,0 +1,26 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: meeting-db
+    environment:
+      POSTGRES_DB: meetingdb
+      POSTGRES_USER: meeting_user
+      POSTGRES_PASSWORD: meeting_pass
+    ports:
+      - '5455:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: meeting-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - '5050:80'
+    depends_on:
+      - db
+
+volumes:
+  pgdata:
