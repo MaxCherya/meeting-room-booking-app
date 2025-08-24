@@ -1,7 +1,6 @@
-// src/components/mm/RoomRegistration.tsx
 "use client";
 
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import GeneralModal from "@/components/ui/modals/GeneralModal";
 import GeneralInput from "@/components/ui/inputs/GeneralInput";
 import SubmitButton from "@/components/ui/bnts/SubmitButton";
@@ -19,18 +18,22 @@ export default function RoomRegistration({ isOpen, onClose }: Props) {
 
     const { mutate: createRoom, isPending, error } = useCreateRoomMutation();
 
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (!name.trim()) return;
+        createRoom(
+            { name: name.trim(), description: description.trim() || undefined },
+            { onSuccess: () => onClose() }
+        );
+        setName('');
+        setDescription('');
+    }
+
     return (
         <GeneralModal isOpen={isOpen} onClose={onClose} title="Register a new room">
             <form
                 className="space-y-4"
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    if (!name.trim()) return;
-                    createRoom(
-                        { name: name.trim(), description: description.trim() || undefined },
-                        { onSuccess: () => onClose() }
-                    );
-                }}
+                onSubmit={(e) => handleSubmit(e)}
             >
                 <GeneralInput
                     id="name"

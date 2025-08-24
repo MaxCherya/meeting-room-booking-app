@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Header from "@/components/mm/Header";
 import Main from "@/components/mm/Main";
 import RoomRegistration from "@/components/mm/RoomRegistration";
-import Pagination from "@/components/ui/pagination/Pagination"; // ← use this one
+import Pagination from "@/components/ui/pagination/Pagination";
 import { useRoomsQuery } from "@/endpoints/room/room.hooks";
 
 export default function HomePage() {
@@ -31,7 +31,6 @@ export default function HomePage() {
                 <>
                     <Main rooms={data.docs} />
 
-                    {/* Drive Pagination from local state so clicks reflect immediately */}
                     <Pagination
                         className="pt-4"
                         page={page}
