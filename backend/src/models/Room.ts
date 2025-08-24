@@ -1,6 +1,7 @@
 import { Table, Column, Model, DataType, HasMany } from 'sequelize-typescript';
 import { Booking } from './Booking';
 import { RoomMember } from './RoomMember';
+import sequelizePaginate from "sequelize-paginate";
 
 @Table({ tableName: 'Rooms', timestamps: true })
 export class Room extends Model {
@@ -10,3 +11,5 @@ export class Room extends Model {
   @HasMany(() => Booking) bookings!: Booking[];
   @HasMany(() => RoomMember) members!: RoomMember[];
 }
+
+sequelizePaginate.paginate(Room as any);
