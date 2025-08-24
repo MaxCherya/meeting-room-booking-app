@@ -8,7 +8,7 @@ import RoomTabs from '@/components/room/RoomTabs';
 import BookingsPanel from '@/components/room/BookingsPanel';
 import MembersPanel from '@/components/room/MembersPanel';
 
-import { useRoomQuery } from '@/endpoints/room/room.hooks';
+import { useRoomQuery, useUpdateRoomMutation } from '@/endpoints/room/room.hooks';
 import {
     useRoomBookingsQuery,
     useCreateBookingMutation,
@@ -25,6 +25,8 @@ import { selectUser } from '@/store/userSlice';
 import ConfirmDialog from '@/components/ui/modals/ConfirmDialogue';
 import Loader from '@/components/ui/loaders/Loader';
 import { toast } from 'react-toastify';
+import { updateRoom } from '@/endpoints/room/room';
+import EditRoomModal from '@/components/room/EditRoomModal';
 
 export default function RoomPage({ params }: { params: Promise<{ id: string }> }) {
     const router = useRouter();
@@ -34,9 +36,11 @@ export default function RoomPage({ params }: { params: Promise<{ id: string }> }
 
     const [tab, setTab] = useState<'bookings' | 'members'>('bookings');
     const [showDelete, setShowDelete] = useState(false);
+    const [openEdit, setOpenEdit] = useState(false);
 
     // detail
     const { data: room, isLoading: loadingRoom, error: roomError } = useRoomQuery(roomId);
+    const { mutateAsync: updateRoom, isPending: saving } = useUpdateRoomMutation();
 
     // members (to compute isAdmin + show panel)
     const { data: members = [], isLoading: loadingMembers } = useMembersQuery(roomId);
@@ -116,6 +120,16 @@ export default function RoomPage({ params }: { params: Promise<{ id: string }> }
         });
     };
 
+    const handleSaveRoom = async (data: { name?: string; description?: string }) => {
+        try {
+            if (!room) return;
+            await updateRoom({ id: room.id, data });
+            setOpenEdit(false);
+        } catch (e: any) {
+            toast.error(e.message || 'Failed to update room');
+        }
+    };
+
     // loading / error states
     if (loadingRoom) {
         return (
@@ -139,9 +153,18 @@ export default function RoomPage({ params }: { params: Promise<{ id: string }> }
                 onAddBooking={() => setTab('bookings')}
                 onAddMember={() => setTab('members')}
                 onDeleteRoom={() => setShowDelete(true)}
+                onEditRoom={() => setOpenEdit(true)}
             />
 
             <RoomTabs tab={tab} onChange={setTab} />
+
+            <EditRoomModal
+                isOpen={openEdit}
+                onClose={() => setOpenEdit(false)}
+                initial={{ name: room.name, description: room.description }}
+                onSave={handleSaveRoom}
+                isSaving={saving}
+            />
 
             {tab === 'bookings' ? (
                 <BookingsPanel
