@@ -22,15 +22,17 @@ export interface PaginatedRooms {
 export interface Booking {
   id: number;
   roomId: number;
-  room: Room;
-  userId: number;
-  user: User;                 // creator
-  startTime: string;          // ISO datetime
-  endTime: string;            // ISO datetime
+  createdById: number;
+  startsAt: string;           // ISO
+  endsAt: string;             // ISO
   description?: string;
   createdAt?: string;
   updatedAt?: string;
+  room: Room;
+  createdBy: User;            // <- NOT 'user'
 }
+
+export type BookingDetail = Booking;
 
 export interface PaginatedBookings {
   docs: Booking[];
@@ -80,7 +82,15 @@ export interface CreateBookingPayload {
 // for updating booking
 export interface UpdateBookingPayload {
   id: number;
-  startTime?: string;
-  endTime?: string;
+  startsAt?: string;
+  endsAt?: string;
   description?: string;
+}
+
+export interface BookingAttendee {
+  id: number;
+  bookingId: number;
+  userId: number;
+  user: User;
+  createdAt?: string;
 }

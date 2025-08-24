@@ -6,10 +6,11 @@ import GeneralModal from '@/components/ui/modals/GeneralModal';
 import GeneralInput from '@/components/ui/inputs/GeneralInput';
 import Pagination from '@/components/ui/pagination/Pagination';
 import SubmitButton from '@/components/ui/bnts/SubmitButton';
-import { Booking } from '@/types/meeting';
 import EmptyState from './EmptyState';
 import ListCard from '../ui/cards/ListCard';
 import ConfirmDialog from '../ui/modals/ConfirmDialogue';
+import { Booking } from '@/types/meeting';
+import { useRouter } from 'next/navigation';
 
 interface BookingsPanelProps {
     roomId: number;
@@ -44,6 +45,8 @@ export default function BookingsPanel({
     const [busy, setBusy] = useState(false);
 
     const [cancelId, setCancelId] = useState<number | null>(null);
+
+    const route = useRouter();
 
     const handleCreate = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -95,27 +98,31 @@ export default function BookingsPanel({
                     {bookings.map((b) => (
                         <ListCard
                             key={b.id}
-                            title={b.description || 'Meeting'}
+                            title={`Meeting ${b.id}`}
                             footer={
                                 <div className="flex items-center justify-between text-sm">
                                     <span className="text-text-muted">
-                                        {fmt(b.startTime)} → {fmt(b.endTime)}
+                                        {fmt(b.startsAt)} → {fmt(b.endsAt)}
                                     </span>
                                     <span className="text-text-muted">
-                                        by {b.user?.name || b.user?.email}
+                                        by {b.createdBy?.name || b.createdBy?.email}
                                     </span>
                                 </div>
                             }
                         >
-                            <div className="flex justify-end">
-                                {(isAdmin || true) && (
-                                    <button
-                                        className="px-3 py-2 rounded-lg border border-border text-text hover:bg-border"
-                                        onClick={() => setCancelId(b.id)}
-                                    >
-                                        Cancel
-                                    </button>
-                                )}
+                            <div className="flex flex-col items-center">
+                                <p className='w-full border-b-1 border-border border-solid mb-2'>{b.description}</p>
+                                <div className='flex flex-col items-center gap-3 lg:flex-row'>
+                                    <GeneralButton onClick={() => route.push(`/booking/${b.id}`)}>More details</GeneralButton>
+                                    {(isAdmin || true) && (
+                                        <button
+                                            className="px-3 py-2 rounded-lg border border-border text-text hover:bg-border"
+                                            onClick={() => setCancelId(b.id)}
+                                        >
+                                            Cancel
+                                        </button>
+                                    )}
+                                </div>
                             </div>
                         </ListCard>
                     ))}

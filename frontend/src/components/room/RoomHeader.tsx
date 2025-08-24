@@ -32,15 +32,8 @@ export default function RoomHeader({
 
                 {/* Actions */}
                 <div className="flex items-center flex-col lg:flex-row gap-2 md:gap-3">
-                    <GeneralButton onClick={onAddBooking} className="!px-4">
-                        + New booking
-                    </GeneralButton>
-
                     {isAdmin && (
                         <>
-                            <GeneralButton onClick={onAddMember} className="!px-4 bg-accent hover:bg-accent-dark">
-                                + Add member
-                            </GeneralButton>
                             <button
                                 onClick={onDeleteRoom}
                                 className="px-4 py-2 rounded-xl border border-border text-error hover:bg-border"
